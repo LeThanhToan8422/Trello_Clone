@@ -38,6 +38,8 @@ export class Board {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @OneToMany(() => List, (list) => list.board)
+  @OneToMany(() => List, (list) => list.board, {
+    onDelete: 'CASCADE',
+  })
   lists: List[];
 }

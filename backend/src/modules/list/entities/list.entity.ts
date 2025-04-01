@@ -31,10 +31,14 @@ export class List {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @ManyToOne(() => Board, (board) => board.lists)
+  @ManyToOne(() => Board, (board) => board.lists, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'boardId' })
   board: Board;
 
-  @OneToMany(() => Task, (task) => task.list)
+  @OneToMany(() => Task, (task) => task.list, {
+    onDelete: 'CASCADE',
+  })
   tasks: Task[];
 }
