@@ -1,7 +1,7 @@
 import axios from "axios";
 import { loginRI, loginResponse } from "../interfaces/login.interface";
 import { create } from "zustand";
-import { API_URL, TOKEN_KEY } from "../assets/constants/constant";
+import { API_URL, SECRET_KEY, TOKEN_KEY } from "../assets/constants/constant";
 import * as CryptoJS from "crypto-js";
 
 interface LoginState {
@@ -26,7 +26,7 @@ const store = (
     try {
       const cryptioPassword = CryptoJS.AES.encrypt(
         userR.password,
-        "secret key 123"
+        SECRET_KEY
       ).toString();
       const response = await axios.post<loginResponse>(
         `${API_URL}/users/login`,

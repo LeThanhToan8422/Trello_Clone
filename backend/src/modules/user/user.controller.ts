@@ -18,7 +18,7 @@ export class UserController {
 
   @Post('login')
   login(@Body() loginDto: LoginDto) {
-    const bytes = CryptoJS.AES.decrypt(loginDto.password, 'secret key 123');
+    const bytes = CryptoJS.AES.decrypt(loginDto.password, 'MinChill@280612');
     loginDto.password = bytes.toString(CryptoJS.enc.Utf8);
     return this.userService.login(loginDto);
   }
@@ -27,7 +27,7 @@ export class UserController {
   create(@Body() createUserDto: CreateUserDto) {
     const bytes = CryptoJS.AES.decrypt(
       createUserDto.password,
-      'secret key 123',
+      'MinChill@280612',
     );
     createUserDto.password = bytes.toString(CryptoJS.enc.Utf8);
     return this.userService.create(createUserDto);
@@ -51,7 +51,7 @@ export class UserController {
     if (updateUserDto.password) {
       const bytes = CryptoJS.AES.decrypt(
         updateUserDto.password,
-        'secret key 123',
+        'MinChill@280612',
       );
       updateUserDto.password = bytes.toString(CryptoJS.enc.Utf8);
     }

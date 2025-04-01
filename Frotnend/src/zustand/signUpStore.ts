@@ -1,7 +1,8 @@
 import axios from "axios";
 import { userRI } from "./../interfaces/user.interface";
 import { create } from "zustand";
-import { API_URL } from "../assets/constants/constant";
+import { API_URL, SECRET_KEY } from "../assets/constants/constant";
+import * as CryptoJS from "crypto-js";
 
 interface SignUpState {
   userR: userRI;
@@ -17,7 +18,14 @@ const store = (
     password: "",
   },
   signUpUser: async (userR: userRI) => {
-    const response = await axios.post(`${API_URL}/users`, userR);
+    const cryptioPassword = CryptoJS.AES.encrypt(
+      userR.password,
+      SECRET_KEY
+    ).toString();
+    const response = await axios.post(`${API_URL}/users`, {
+      ...userR,
+      password: cryptioPassword,
+    });
     set(() => ({
       userR: response.data,
     }));
