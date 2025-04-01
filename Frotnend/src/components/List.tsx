@@ -1,9 +1,10 @@
 import React, { useState } from "react";
-import { Button, Input, Modal, Form, Typography, Tag } from "antd";
+import { Button, Input, Modal, Form, Typography, Tag, Select } from "antd";
 import { PlusOutlined, DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { useBoardStore } from "../zustand/boardStore";
 import Task from "./Task";
-import { List as ListType } from "../interfaces/task.interface";
+import { List as ListType, DEFAULT_LABELS } from "../interfaces/task.interface";
+import "./List.css";
 
 const { Text } = Typography;
 
@@ -21,8 +22,16 @@ const List: React.FC<ListProps> = ({ list }) => {
   const handleAddTask = async (values: {
     title: string;
     description: string;
+    label?: string;
   }) => {
-    addTask(list.boardId, list.id, values.title, values.description);
+    const selectedLabel = DEFAULT_LABELS.find((l) => l.text === values.label);
+    addTask(
+      list.boardId,
+      list.id,
+      values.title,
+      values.description,
+      selectedLabel
+    );
     setIsAddTaskModalVisible(false);
     form.resetFields();
   };
@@ -79,12 +88,6 @@ const List: React.FC<ListProps> = ({ list }) => {
         />
       </div>
 
-      <div className="task-list">
-        {list.tasks.map((task, index) => (
-          <Task key={task.id} task={task} index={index} />
-        ))}
-      </div>
-
       <div className="list-footer">
         <Button
           type="text"
@@ -93,6 +96,12 @@ const List: React.FC<ListProps> = ({ list }) => {
           onClick={() => setIsAddTaskModalVisible(true)}>
           Thêm thẻ
         </Button>
+      </div>
+
+      <div className="task-list">
+        {list.tasks.map((task, index) => (
+          <Task key={task.id} task={task} index={index} />
+        ))}
       </div>
 
       <Modal
@@ -108,6 +117,34 @@ const List: React.FC<ListProps> = ({ list }) => {
           </Form.Item>
           <Form.Item name="description">
             <Input.TextArea placeholder="Nhập mô tả (tùy chọn)" />
+          </Form.Item>
+          <Form.Item name="label" label="Nhãn">
+            <Select
+              placeholder="Chọn nhãn"
+              allowClear
+              style={{ width: "100%" }}
+              options={DEFAULT_LABELS.map((label) => ({
+                value: label.text,
+                label: (
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                    }}>
+                    <div
+                      style={{
+                        width: 16,
+                        height: 16,
+                        borderRadius: 4,
+                        backgroundColor: label.color,
+                      }}
+                    />
+                    <span>{label.text}</span>
+                  </div>
+                ),
+              }))}
+            />
           </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit">

@@ -30,7 +30,8 @@ interface BoardState {
     boardId: string,
     listId: string,
     title: string,
-    description: string
+    description: string,
+    label?: { text: string; color: string }
   ) => Promise<void>;
   updateTask: (
     boardId: string,
@@ -237,7 +238,8 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     boardId: string,
     listId: string,
     title: string,
-    description: string
+    description: string,
+    label?: { text: string; color: string }
   ) => {
     try {
       set({ loading: true, error: null });
@@ -253,6 +255,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
         listId,
         boardId,
         order: list.tasks.length,
+        label,
       });
 
       const updatedBoard = await axios.get(`${API_URL}/boards/${boardId}`);
