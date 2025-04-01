@@ -22,14 +22,30 @@ export class BoardService {
         userId: id,
       },
       relations: ['lists', 'lists.tasks'],
-      order: { updatedAt: 'DESC' },
+      order: {
+        updatedAt: 'DESC',
+        lists: {
+          order: 'ASC',
+          tasks: {
+            order: 'ASC',
+          },
+        },
+      },
     });
   }
 
   async findAll(): Promise<Board[]> {
     return await this.boardRepository.find({
       relations: ['lists', 'lists.tasks'],
-      order: { updatedAt: 'DESC' },
+      order: {
+        updatedAt: 'DESC',
+        lists: {
+          order: 'ASC',
+          tasks: {
+            order: 'ASC',
+          },
+        },
+      },
     });
   }
 
@@ -37,6 +53,14 @@ export class BoardService {
     const board = await this.boardRepository.findOne({
       where: { id },
       relations: ['lists', 'lists.tasks'],
+      order: {
+        lists: {
+          order: 'ASC',
+          tasks: {
+            order: 'ASC',
+          },
+        },
+      },
     });
     if (!board) {
       throw new NotFoundException(`Board with ID ${id} not found`);
