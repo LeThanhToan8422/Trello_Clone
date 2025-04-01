@@ -13,3 +13,119 @@
   box-sizing: border-box;
   background-color: #f0f2f5;
 }
+
+.board-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border-bottom: 1px solid #e8e8e8;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-right .ant-input-affix-wrapper {
+  border-radius: 4px;
+  background-color: rgba(255, 255, 255, 0.3);
+  border: 1px solid #e8e8e8;
+  transition: all 0.3s;
+}
+
+.header-right .ant-input-affix-wrapper:hover,
+.header-right .ant-input-affix-wrapper:focus {
+  background-color: white;
+  border-color: #40a9ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.2);
+}
+
+.header-right .ant-input {
+  background: transparent;
+}
+
+.search-container {
+  position: relative;
+  display: inline-block;
+  margin-right: 16px;
+}
+
+.search-results {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background-color: white;
+  border: 1px solid #e8e8e8;
+  border-radius: 4px;
+  box-shadow: 0 3px 6px -4px rgba(0, 0, 0, 0.12),
+    0 6px 16px 0 rgba(0, 0, 0, 0.08);
+  max-height: 300px;
+  overflow-y: auto;
+  z-index: 9999;
+  min-width: 250px;
+  margin-top: 4px;
+}
+
+.search-result-item {
+  padding: 8px 12px;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.search-result-item:hover {
+  background-color: #f5f5f5;
+}
+
+.search-result-item .task-title {
+  font-weight: 500;
+  color: #000000d9;
+}
+
+.search-result-item .board-title {
+  font-size: 12px;
+  color: #00000073;
+}
+
+/* Empty state */
+.search-results:empty {
+  display: none;
+}
+
+/* No results message */
+.search-results .no-results {
+  padding: 12px;
+  text-align: center;
+  color: #00000073;
+}
+
+/* Custom scrollbar for search results */
+.search-results::-webkit-scrollbar {
+  width: 6px;
+}
+
+.search-results::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.search-results::-webkit-scrollbar-thumb {
+  background: #c0c0c0;
+  border-radius: 3px;
+}
+
+.search-results::-webkit-scrollbar-thumb:hover {
+  background: #a0a0a0;
+}

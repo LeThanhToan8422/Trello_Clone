@@ -46,13 +46,7 @@ interface BoardState {
     listId: string,
     taskId: string
   ) => Promise<void>;
-  moveTask: (
-    boardId: string,
-    taskId: string,
-    sourceListId: string,
-    destinationListId: string,
-    newOrder: number
-  ) => Promise<void>;
+  searchBoards: (searchTerm: string) => Promise<void>;
 }
 
 export const useBoardStore = create<BoardState>((set, get) => ({
@@ -311,101 +305,22 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     }
   },
 
-  moveTask: async (
-    boardId: string,
-    taskId: string,
-    sourceListId: string,
-    destinationListId: string,
-    newOrder: number
-  ) => {
+  searchBoards: async (searchTerm: string) => {
     try {
       set({ loading: true, error: null });
-      await axios.patch(`${API_URL}/tasks/${taskId}`, {
-        listId: destinationListId,
-        order: newOrder,
-      });
-
-      set((state) => {
-        // Update boards state
-        const updatedBoards = state.boards.map((board) => {
-          if (board.id === boardId) {
-            return {
-              ...board,
-              lists: board.lists.map((list) => {
-                // Remove task from source list
-                if (list.id === sourceListId) {
-                  return {
-                    ...list,
-                    tasks: list.tasks.filter((task) => task.id !== taskId),
-                  };
-                }
-                // Add task to destination list
-                if (list.id === destinationListId) {
-                  const task = state.currentBoard?.lists
-                    .find((l) => l.id === sourceListId)
-                    ?.tasks.find((t) => t.id === taskId);
-                  if (task) {
-                    return {
-                      ...list,
-                      tasks: [
-                        ...list.tasks.slice(0, newOrder),
-                        { ...task, listId: destinationListId, order: newOrder },
-                        ...list.tasks.slice(newOrder),
-                      ],
-                    };
-                  }
-                }
-                return list;
-              }),
-            };
-          }
-          return board;
-        });
-
-        // Update currentBoard state
-        let updatedCurrentBoard = state.currentBoard;
-        if (state.currentBoard?.id === boardId) {
-          updatedCurrentBoard = {
-            ...state.currentBoard,
-            lists: state.currentBoard.lists.map((list) => {
-              // Remove task from source list
-              if (list.id === sourceListId) {
-                return {
-                  ...list,
-                  tasks: list.tasks.filter((task) => task.id !== taskId),
-                };
-              }
-              // Add task to destination list
-              if (list.id === destinationListId) {
-                const task = state.currentBoard?.lists
-                  .find((l) => l.id === sourceListId)
-                  ?.tasks.find((t) => t.id === taskId);
-                if (task) {
-                  return {
-                    ...list,
-                    tasks: [
-                      ...list.tasks.slice(0, newOrder),
-                      { ...task, listId: destinationListId, order: newOrder },
-                      ...list.tasks.slice(newOrder),
-                    ],
-                  };
-                }
-              }
-              return list;
-            }),
-          };
+      const response = await axios.get(
+        `${API_URL}/boards/search/title?q=${searchTerm}`,
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem(TOKEN_KEY)}`,
+          },
         }
-
-        return {
-          boards: updatedBoards,
-          currentBoard: updatedCurrentBoard,
-          error: null,
-        };
-      });
+      );
+      set({ currentBoard: response.data[0] || null });
     } catch (error) {
-      set({
-        error: error instanceof Error ? error.message : "Failed to move task",
-      });
+      const message =
+        error instanceof Error ? error.message : "Failed to search boards";
+      set({ error: message });
     } finally {
       set({ loading: false });
     }

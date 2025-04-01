@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, ILike } from 'typeorm';
 import { Board } from './entities/board.entity';
 import { CreateBoardDto, UpdateBoardDto } from './dtos/board.dto';
 
@@ -77,5 +77,41 @@ export class BoardService {
   async remove(id: string): Promise<void> {
     const board = await this.findOne(id);
     await this.boardRepository.remove(board);
+  }
+
+  async search(searchTerm: string, userId: string): Promise<Board[]> {
+    const boards = await this.boardRepository.find({
+      where: [
+        {
+          userId,
+          lists: {
+            tasks: {
+              title: ILike(`%${searchTerm}%`),
+            },
+          },
+        },
+      ],
+      relations: ['lists', 'lists.tasks'],
+      order: {
+        updatedAt: 'DESC',
+        lists: {
+          order: 'ASC',
+          tasks: {
+            order: 'ASC',
+          },
+        },
+      },
+    });
+
+    // Filter tasks in each board to only show matching tasks
+    return boards.map((board) => ({
+      ...board,
+      lists: board.lists.map((list) => ({
+        ...list,
+        tasks: list.tasks.filter((task) =>
+          task.title.toLowerCase().includes(searchTerm.toLowerCase()),
+        ),
+      })),
+    }));
   }
 }
