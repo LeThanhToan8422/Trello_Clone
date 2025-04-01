@@ -1,0 +1,68 @@
+.list-container {
+  background-color: #f0f2f5;
+  border-radius: 8px;
+  width: 280px;
+  margin: 0 8px;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - 120px); /* Subtract header height and some padding */
+}
+
+.list-header {
+  padding: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.list-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  flex: 1;
+}
+
+.task-list {
+  padding: 0 8px;
+  flex: 1;
+  overflow-y: auto;
+  min-height: 10px;
+  max-height: calc(
+    100vh - 200px
+  ); /* Adjust based on your header and footer heights */
+}
+
+/* Custom scrollbar styling */
+.task-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.task-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.task-list::-webkit-scrollbar-thumb {
+  background: #c0c0c0;
+  border-radius: 3px;
+}
+
+.task-list::-webkit-scrollbar-thumb:hover {
+  background: #a0a0a0;
+}
+
+.list-footer {
+  padding: 8px;
+  border-top: 1px solid #e8e8e8;
+}
+
+/* Ensure task cards have proper spacing */
+.task-card {
+  margin-bottom: 8px;
+}
+
+/* Make sure the last task card doesn't have bottom margin */
+.task-card:last-child {
+  margin-bottom: 0;
+}
