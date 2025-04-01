@@ -7,6 +7,7 @@ import { join } from 'path';
 import { BoardModule } from './modules/board/board.module';
 import { ListModule } from './modules/list/list.module';
 import { TaskModule } from './modules/task/task.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { TaskModule } from './modules/task/task.module';
     BoardModule,
     ListModule,
     TaskModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,21 +1,42 @@
-import React, { useState, useEffect } from "react";
-import { Button, Input, Modal, Form, Spin, notification } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import React, { useState, useEffect, useRef } from "react";
+import { Button, Input, Modal, Form, Spin, Select } from "antd";
+import { PlusOutlined, SearchOutlined } from "@ant-design/icons";
 import { useBoardStore } from "../zustand/boardStore";
 import { useLoginStore } from "../zustand/loginStore";
 import { useNavigate, useParams } from "react-router-dom";
 import { DragDropContext, Droppable } from "react-beautiful-dnd";
 import List from "./List";
 import { DropResult } from "react-beautiful-dnd";
+import { Bounce, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import {
+  Task,
+  List as ListType,
+  DEFAULT_LABELS,
+} from "../interfaces/task.interface";
 
 const Board: React.FC = () => {
   const { boardId } = useParams();
-  const { currentBoard, setCurrentBoard, addList, loading, error } =
+  const { currentBoard, setCurrentBoard, addList, loading, error, boards } =
     useBoardStore();
+
   const { logout } = useLoginStore();
   const navigate = useNavigate();
   const [isAddListModalVisible, setIsAddListModalVisible] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showSearchResults, setShowSearchResults] = useState(false);
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
+  const [isTaskModalVisible, setIsTaskModalVisible] = useState(false);
+  const [searchResults, setSearchResults] = useState<
+    Array<{
+      boardId: string;
+      boardTitle: string;
+      task: Task;
+    }>
+  >([]);
+  const searchRef = useRef<HTMLDivElement>(null);
   const [form] = Form.useForm();
+  const [filteredLists, setFilteredLists] = useState<ListType[]>([]);
 
   useEffect(() => {
     if (boardId) {
@@ -25,12 +46,70 @@ const Board: React.FC = () => {
 
   useEffect(() => {
     if (error) {
-      notification.error({
-        message: "Lỗi",
-        description: error,
+      toast.error(`🦄 ${error}`, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Bounce,
       });
     }
   }, [error]);
+
+  useEffect(() => {
+    if (currentBoard) {
+      setFilteredLists(currentBoard.lists);
+    }
+  }, [currentBoard]);
+
+  useEffect(() => {
+    // Handle click outside search results
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        searchRef.current &&
+        !searchRef.current.contains(event.target as Node)
+      ) {
+        setShowSearchResults(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    if (searchTerm.trim()) {
+      const results: Array<{
+        boardId: string;
+        boardTitle: string;
+        task: Task;
+      }> = [];
+      boards?.forEach((board) => {
+        board.lists?.forEach((list) => {
+          list.tasks
+            .filter((task) =>
+              task.title.toLowerCase().includes(searchTerm.toLowerCase())
+            )
+            .forEach((task) => {
+              results.push({
+                boardId: board.id,
+                boardTitle: board.title,
+                task,
+              });
+            });
+        });
+      });
+      setSearchResults(results);
+      setShowSearchResults(true);
+    } else {
+      setSearchResults([]);
+      setShowSearchResults(false);
+    }
+  }, [JSON.stringify(searchTerm), JSON.stringify(boards)]);
 
   const handleAddList = async (values: { title: string }) => {
     if (boardId) {
@@ -108,6 +187,19 @@ const Board: React.FC = () => {
     }
   };
 
+  const handleSearch = (value: string) => {
+    setSearchTerm(value);
+  };
+
+  const handleTaskClick = async (boardId: string, task: Task) => {
+    setShowSearchResults(false);
+    setSearchTerm("");
+    setSelectedTask(task);
+    await setCurrentBoard(boardId);
+    navigate(`/board/${boardId}`);
+    setIsTaskModalVisible(true);
+  };
+
   if (loading) {
     return (
       <div className="board-loading">
@@ -130,7 +222,39 @@ const Board: React.FC = () => {
           <Button type="primary">📋 Bảng</Button>
         </div>
         <div className="header-right">
-          <Button type="text">🔍</Button>
+          <div className="search-container" ref={searchRef}>
+            <Input
+              placeholder="Tìm kiếm..."
+              prefix={<SearchOutlined />}
+              style={{ width: 250 }}
+              value={searchTerm}
+              onChange={(e) => handleSearch(e.target.value)}
+              allowClear
+            />
+            {showSearchResults && searchTerm.trim() && (
+              <div className="search-results">
+                {searchResults.length > 0 ? (
+                  searchResults.map((result) => (
+                    <div
+                      key={result.task.id}
+                      className="search-result-item"
+                      onClick={() =>
+                        handleTaskClick(result.boardId, result.task)
+                      }>
+                      <div className="task-title">{result.task.title}</div>
+                      <div className="board-title">
+                        trong bảng: {result.boardTitle}
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="no-results">
+                    Không tìm thấy kết quả phù hợp
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
           <Button type="text">⚡</Button>
           <Button type="text">⚙️</Button>
           <Button type="primary" danger onClick={handleLogout}>
@@ -146,7 +270,7 @@ const Board: React.FC = () => {
               className="lists-container"
               ref={provided.innerRef}
               {...provided.droppableProps}>
-              {currentBoard.lists.map((list, index) => (
+              {filteredLists.map((list, index) => (
                 <List key={list.id} list={list} index={index} />
               ))}
               {provided.placeholder}
@@ -182,6 +306,63 @@ const Board: React.FC = () => {
             </Button>
           </Form.Item>
         </Form>
+      </Modal>
+
+      <Modal
+        title="Chi tiết thẻ"
+        open={isTaskModalVisible}
+        onCancel={() => setIsTaskModalVisible(false)}
+        footer={null}>
+        {selectedTask && (
+          <Form
+            initialValues={{
+              title: selectedTask.title,
+              description: selectedTask.description,
+              label: selectedTask.label?.text,
+            }}>
+            <Form.Item
+              name="title"
+              rules={[{ required: true, message: "Vui lòng nhập tiêu đề" }]}>
+              <Input placeholder="Nhập tiêu đề thẻ" />
+            </Form.Item>
+            <Form.Item name="description">
+              <Input.TextArea placeholder="Nhập mô tả" />
+            </Form.Item>
+            <Form.Item name="label" label="Nhãn">
+              <Select
+                placeholder="Chọn nhãn"
+                allowClear
+                style={{ width: "100%" }}
+                options={DEFAULT_LABELS.map((label) => ({
+                  value: label.text,
+                  label: (
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                      }}>
+                      <div
+                        style={{
+                          width: 16,
+                          height: 16,
+                          borderRadius: 4,
+                          backgroundColor: label.color,
+                        }}
+                      />
+                      <span>{label.text}</span>
+                    </div>
+                  ),
+                }))}
+              />
+            </Form.Item>
+            <Form.Item>
+              <Button type="primary" htmlType="submit">
+                Cập nhật
+              </Button>
+            </Form.Item>
+          </Form>
+        )}
       </Modal>
     </div>
   );

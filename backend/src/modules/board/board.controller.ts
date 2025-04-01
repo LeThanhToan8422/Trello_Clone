@@ -10,14 +10,17 @@ import {
   Delete,
   UseGuards,
   Req,
+  Query,
 } from '@nestjs/common';
 import { BoardService } from './board.service';
 import { CreateBoardDto, UpdateBoardDto } from './dtos/board.dto';
 import { AuthGuard } from 'src/guards/auth/auth.guard';
 import { plainToInstance } from 'class-transformer';
-import { log } from 'console';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { GetUser } from '../auth/decorators/get-user.decorator';
 
 @Controller('boards')
+// @UseGuards(JwtAuthGuard)
 export class BoardController {
   constructor(private readonly boardService: BoardService) {}
 
@@ -57,5 +60,12 @@ export class BoardController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.boardService.remove(id);
+  }
+
+  @UseGuards(AuthGuard)
+  @Get('search/title')
+  async search(@Req() req: Request, @Query('q') searchTerm: string) {
+    const payload = req.user as userI;
+    return await this.boardService.search(searchTerm, payload.id);
   }
 }
