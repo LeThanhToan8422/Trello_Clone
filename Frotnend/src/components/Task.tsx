@@ -11,6 +11,7 @@ interface TaskProps {
 }
 
 const Task: React.FC<TaskProps> = ({ task }) => {
+  console.log(task);
   const { updateTask, deleteTask } = useBoardStore();
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [form] = Form.useForm();
