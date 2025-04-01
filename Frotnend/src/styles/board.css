@@ -1,0 +1,173 @@
+.board-container {
+  padding: 20px;
+  min-height: 100vh;
+  background-color: #f0f2f5;
+}
+
+.board-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding: 8px 16px;
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.header-left,
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.header-left h2 {
+  margin: 0;
+  margin-right: 16px;
+}
+
+.lists-container {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding: 10px;
+  min-height: calc(100vh - 100px);
+  align-items: flex-start;
+}
+
+.list-container {
+  background-color: #f4f5f7;
+  border-radius: 8px;
+  width: 300px;
+  min-height: 100px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+.list-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 12px;
+  padding: 8px;
+}
+
+.list-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.list-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 4px;
+}
+
+.tasks-container {
+  flex: 1;
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.task-list {
+  min-height: 100px;
+  padding: 8px;
+}
+
+.task-card {
+  margin-bottom: 8px;
+}
+
+.task-card-content {
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  transition: box-shadow 0.2s ease;
+}
+
+.task-card-content:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.task-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 0;
+}
+
+.task-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+}
+
+.task-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.task-badges {
+  display: flex;
+  gap: 4px;
+  margin-top: 8px;
+}
+
+.add-list-button {
+  min-width: 300px;
+  padding: 8px;
+  background-color: #f4f5f7;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+/* Scrollbar styles */
+.lists-container::-webkit-scrollbar {
+  height: 8px;
+}
+
+.lists-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.lists-container::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+.lists-container::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* Status tags */
+.ant-tag {
+  margin: 0;
+  border-radius: 4px;
+}
+
+.ant-tag-blue {
+  background-color: #e6f7ff;
+  border-color: #91d5ff;
+  color: #1890ff;
+}
+
+.ant-tag-green {
+  background-color: #f6ffed;
+  border-color: #b7eb8f;
+  color: #52c41a;
+}
+
+.ant-tag-gold {
+  background-color: #fffbe6;
+  border-color: #ffe58f;
+  color: #faad14;
+}

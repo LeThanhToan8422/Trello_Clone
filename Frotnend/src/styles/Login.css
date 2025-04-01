@@ -1,0 +1,94 @@
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f0f2f5;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  padding: 24px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.login-title {
+  text-align: center;
+  margin-bottom: 24px !important;
+  color: #1890ff;
+}
+
+.login-form {
+  margin-bottom: 24px;
+}
+
+.login-button {
+  width: 100%;
+  height: 40px;
+  font-size: 16px;
+}
+
+.divider-text {
+  text-align: center;
+  color: #8c8c8c;
+  margin: 16px 0;
+  position: relative;
+}
+
+.divider-text::before,
+.divider-text::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 45%;
+  height: 1px;
+  background-color: #e8e8e8;
+}
+
+.divider-text::before {
+  left: 0;
+}
+
+.divider-text::after {
+  right: 0;
+}
+
+.social-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.social-button {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+}
+
+.social-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.footer-text {
+  text-align: center;
+  margin-top: 16px;
+  color: #8c8c8c;
+}
+
+.footer-text a {
+  color: #1890ff;
+  text-decoration: none;
+  margin-left: 4px;
+}
+
+.footer-text a:hover {
+  text-decoration: underline;
+}

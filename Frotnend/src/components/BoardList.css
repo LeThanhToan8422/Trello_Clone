@@ -1,0 +1,270 @@
+.app-container {
+  min-height: 100vh;
+  background-color: #f0f2f5;
+}
+
+.top-nav {
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  height: 48px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e8e8e8;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-right: 24px;
+}
+
+.app-logo {
+  width: 32px;
+  height: 32px;
+  background-color: #1890ff;
+  color: white;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.app-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: #262626;
+}
+
+.nav-menu {
+  flex: 1;
+  border-bottom: none;
+  background: transparent;
+}
+
+.nav-menu .ant-menu-item {
+  padding: 0 16px;
+  margin: 0 4px;
+  height: 48px;
+  line-height: 48px;
+}
+
+.nav-menu .ant-menu-item:hover {
+  color: #1890ff;
+}
+
+.nav-menu .ant-menu-item-selected {
+  color: #1890ff;
+  border-bottom: 2px solid #1890ff;
+}
+
+.upgrade-button {
+  margin-left: 16px;
+  border-radius: 6px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.board-list-container {
+  padding: 24px;
+  margin-top: 48px;
+  max-width: 1200px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.board-section {
+  margin-top: 24px;
+}
+
+.board-list-header {
+  margin-bottom: 24px;
+  padding: 0 8px;
+}
+
+.header-content h3 {
+  margin: 0;
+  color: #262626;
+}
+
+.boards-wrapper {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 24px;
+  padding: 8px;
+}
+
+.create-board-card {
+  height: 96px;
+  border-radius: 8px;
+  border: 2px dashed #d9d9d9;
+  background-color: #fafafa;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.create-board-card:hover {
+  border-color: #1890ff;
+  background-color: #f0f7ff;
+}
+
+.create-board-content {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.plus-icon {
+  font-size: 24px;
+  color: #8c8c8c;
+}
+
+.create-board-content .ant-typography {
+  color: #8c8c8c;
+  font-size: 14px;
+}
+
+.board-card {
+  height: 96px;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.board-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.board-card-cover {
+  height: 100%;
+  position: relative;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.board-card-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(0, 0, 0, 0.1) 0%,
+    rgba(0, 0, 0, 0.3) 100%
+  );
+}
+
+.board-card-title {
+  color: white;
+  font-size: 16px;
+  font-weight: 500;
+  position: relative;
+  z-index: 1;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.board-card-actions {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.board-card:hover .board-card-actions {
+  opacity: 1;
+}
+
+.board-action-button {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  border-radius: 4px;
+}
+
+.board-action-button:hover {
+  background: rgba(255, 255, 255, 0.3);
+  color: white;
+}
+
+.board-action-button.ant-btn-dangerous:hover {
+  background: rgba(255, 77, 79, 0.3);
+  color: white;
+}
+
+.board-modal {
+  width: 480px !important;
+}
+
+.board-modal .ant-modal-content {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.board-form {
+  margin-top: 24px;
+}
+
+.board-input {
+  border-radius: 6px;
+  border: 1px solid #d9d9d9;
+  transition: all 0.3s;
+}
+
+.board-input:hover,
+.board-input:focus {
+  border-color: #1890ff;
+  box-shadow: 0 0 0 2px rgba(24, 144, 255, 0.1);
+}
+
+.board-submit-button {
+  width: 100%;
+  height: 40px;
+  font-weight: 500;
+  border-radius: 6px;
+  margin-top: 8px;
+}
+
+@media (max-width: 768px) {
+  .nav-menu {
+    display: none;
+  }
+
+  .board-list-container {
+    padding: 16px;
+  }
+
+  .boards-wrapper {
+    grid-template-columns: 1fr;
+  }
+
+  .board-modal {
+    width: 90% !important;
+    margin: 0 auto;
+  }
+}

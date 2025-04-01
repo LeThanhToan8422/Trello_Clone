@@ -1,0 +1,15 @@
+@import "antd/dist/reset.css";
+@import "./auth.css";
+@import "./board.css";
+
+.app-container {
+  min-height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* background: linear-gradient(135deg, #a0b4ff 0%, #e5c6ff 100%); */
+  padding: 20px;
+  box-sizing: border-box;
+  background-color: #f0f2f5;
+}

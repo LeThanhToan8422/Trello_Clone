@@ -1,0 +1,179 @@
+.board-list-container {
+  padding: 24px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.board-list-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.board-card {
+  width: 100%;
+  height: 150px;
+  transition: transform 0.2s;
+}
+
+.board-card:hover {
+  transform: translateY(-4px);
+}
+
+.board-card .ant-card-meta {
+  height: 80px;
+}
+
+.board-card .ant-card-meta-title {
+  color: white;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+.board-card .ant-card-meta-description {
+  color: rgba(255, 255, 255, 0.8);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.board-card-footer {
+  margin-top: 8px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.8);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+
+.board-card .ant-card-actions {
+  background: transparent;
+  border-top: none;
+}
+
+.board-card .ant-card-actions > li {
+  margin: 0;
+}
+
+.board-card .ant-card-actions > li > span {
+  width: 100%;
+  height: 100%;
+}
+
+.board-card .ant-btn {
+  width: 100%;
+  height: 100%;
+  border: none;
+  padding: 8px;
+}
+
+.board-card .ant-btn:hover {
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.board-card .ant-btn-dangerous:hover {
+  color: #ff4d4f;
+  background-color: rgba(255, 77, 79, 0.1);
+}
+
+/* Create Board Modal */
+.create-board-modal {
+  max-width: 800px !important;
+}
+
+.create-board-modal .ant-modal-content {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.create-board-modal .ant-modal-header {
+  border-bottom: none;
+  padding: 16px 24px;
+}
+
+.create-board-modal .ant-modal-body {
+  padding: 0 24px 24px;
+}
+
+.board-preview {
+  width: 100%;
+  height: 120px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.board-preview::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.background-options {
+  margin-bottom: 24px;
+}
+
+.background-options h3 {
+  margin-bottom: 12px;
+  color: #172b4d;
+}
+
+.background-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 8px;
+}
+
+.background-option {
+  width: 100%;
+  padding-top: 56.25%; /* 16:9 aspect ratio */
+  border-radius: 4px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  border: 2px solid transparent;
+  transition: all 0.2s;
+}
+
+.background-option.selected {
+  border-color: #0052cc;
+}
+
+.background-option img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.background-option.gradient {
+  background: linear-gradient(to right, var(--start-color), var(--end-color));
+}
+
+.required-mark {
+  color: #ff4d4f;
+  margin-left: 4px;
+}
+
+.form-note {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #172b4d;
+  margin-top: 4px;
+  font-size: 12px;
+}
+
+.form-note .anticon {
+  color: #ff4d4f;
+}

@@ -1,0 +1,143 @@
+.task-card {
+  margin-bottom: 8px;
+  border-radius: 8px;
+  background: white;
+}
+
+.task-card.dragging {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.task-card-content {
+  border-radius: 8px !important;
+  background: white;
+  position: relative;
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+.task-card-content:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.task-label {
+  padding: 4px 12px;
+  font-size: 13px;
+  font-weight: 500;
+  color: white;
+}
+
+.task-body {
+  padding: 12px;
+}
+
+.task-title {
+  font-size: 14px;
+  font-weight: 400;
+  color: #262626;
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+
+.task-description {
+  font-size: 12px;
+  color: #8c8c8c;
+  margin-bottom: 12px;
+  line-height: 1.5;
+}
+
+.task-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.task-icons {
+  display: flex;
+  gap: 8px;
+  color: #8c8c8c;
+}
+
+.task-icon {
+  font-size: 14px;
+}
+
+.task-members {
+  display: flex;
+  align-items: center;
+  gap: -4px;
+}
+
+.member-avatar {
+  width: 24px;
+  height: 24px;
+  font-size: 12px;
+  border: 2px solid white;
+}
+
+.task-actions {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.task-card-content:hover .task-actions {
+  opacity: 1;
+}
+
+.task-actions .ant-btn {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  font-size: 14px;
+}
+
+.task-actions .ant-btn:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.task-actions .ant-btn-dangerous:hover {
+  color: #ff4d4f;
+  background: rgba(255, 77, 79, 0.1);
+}
+
+.task-modal {
+  width: 520px !important;
+}
+
+.task-modal .ant-modal-content {
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.task-form {
+  margin-top: 24px;
+}
+
+.task-form .ant-form-item:last-child {
+  margin-bottom: 0;
+}
+
+.task-form .ant-select-selector {
+  border-radius: 6px !important;
+}
+
+.task-form .ant-input,
+.task-form .ant-input-textarea {
+  border-radius: 6px;
+}
+
+.task-form .ant-btn {
+  border-radius: 6px;
+  height: 40px;
+}
