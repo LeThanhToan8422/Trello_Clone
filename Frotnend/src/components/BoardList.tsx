@@ -1,15 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  Card,
-  Button,
-  Input,
-  Modal,
-  Form,
-  Typography,
-  Spin,
-  notification,
-  Menu,
-} from "antd";
+import { Card, Button, Input, Modal, Form, Typography, Spin, Menu } from "antd";
 import {
   PlusOutlined,
   EditOutlined,
@@ -24,6 +14,7 @@ import { useBoardStore } from "../zustand/boardStore";
 import { useNavigate } from "react-router-dom";
 import "./BoardList.css";
 import { useLoginStore } from "../zustand/loginStore";
+import { Bounce, toast } from "react-toastify";
 
 const { Title, Text } = Typography;
 
@@ -53,9 +44,16 @@ const BoardList: React.FC = () => {
 
   useEffect(() => {
     if (error) {
-      notification.error({
-        message: "Lỗi",
-        description: error,
+      toast.error(`🦄 ${error}`, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Bounce,
       });
     }
   }, [error]);

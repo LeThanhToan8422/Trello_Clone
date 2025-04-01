@@ -1,17 +1,10 @@
-import axios from "axios";
 import { loginRI, loginResponse } from "../interfaces/login.interface";
 import { create } from "zustand";
-import { API_URL, SECRET_KEY, TOKEN_KEY } from "../assets/constants/constant";
+import { SECRET_KEY, TOKEN_KEY } from "../assets/constants/constant";
 import * as CryptoJS from "crypto-js";
-
-interface LoginState {
-  userR: loginRI;
-  token: string | null;
-  isLoggedIn: boolean;
-  loginUser: (userR: loginRI) => Promise<void>;
-  checkLogin: () => void;
-  logout: () => void;
-}
+import axiosInstance from "../config/axios";
+import axios from "axios";
+import { LoginState } from "./interfaces/login.interface";
 
 const store = (
   set: (fn: (state: LoginState) => Partial<LoginState>) => void
@@ -28,20 +21,17 @@ const store = (
         userR.password,
         SECRET_KEY
       ).toString();
-      const response = await axios.post<loginResponse>(
-        `${API_URL}/users/login`,
-        {
-          ...userR,
-          password: cryptioPassword,
-        }
-      );
+      const response = await axiosInstance.post<loginResponse>(`/users/login`, {
+        ...userR,
+        password: cryptioPassword,
+      });
       const token = response.data.token;
       localStorage.setItem(TOKEN_KEY, token);
       set(() => ({
         token,
         isLoggedIn: true,
       }));
-    } catch (error) {
+    } catch (error: unknown) {
       if (axios.isAxiosError(error)) {
         if (error.response?.status === 401) {
           throw new Error("Email hoặc mật khẩu không chính xác");

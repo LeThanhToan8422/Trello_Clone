@@ -1,7 +1,6 @@
-import { create } from "zustand";
-import axios from "axios";
-import { Board } from "../interfaces/task.interface";
-import { API_URL, TOKEN_KEY } from "../assets/constants/constant";
+import { create, get, StateCreator } from "zustand";
+import axiosInstance from "../config/axios";
+import { Board, List } from "../interfaces/task.interface";
 
 interface BoardState {
   boards: Board[];
@@ -49,7 +48,7 @@ interface BoardState {
   searchBoards: (searchTerm: string) => Promise<void>;
 }
 
-export const useBoardStore = create<BoardState>((set, get) => ({
+const createBoardStore: StateCreator<BoardState> = (set, get) => ({
   boards: [],
   currentBoard: null,
   loading: false,
@@ -58,11 +57,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
   fetchBoards: async () => {
     try {
       set({ loading: true, error: null });
-      const response = await axios.get(`${API_URL}/boards/user/id`, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem(TOKEN_KEY)}`,
-        },
-      });
+      const response = await axiosInstance.get(`/boards/user/id`);
       set({ boards: response.data });
     } catch (error) {
       const message =
@@ -76,7 +71,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
   fetchBoardById: async (id: string) => {
     try {
       set({ loading: true, error: null });
-      const response = await axios.get(`${API_URL}/boards/${id}`);
+      const response = await axiosInstance.get(`/boards/${id}`);
       set({ currentBoard: response.data });
     } catch (error) {
       const message =
@@ -94,19 +89,11 @@ export const useBoardStore = create<BoardState>((set, get) => ({
   ) => {
     try {
       set({ loading: true, error: null });
-      const response = await axios.post(
-        `${API_URL}/boards`,
-        {
-          title,
-          description,
-          background,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem(TOKEN_KEY)}`,
-          },
-        }
-      );
+      const response = await axiosInstance.post(`/boards`, {
+        title,
+        description,
+        background,
+      });
       set((state) => ({ boards: [...state.boards, response.data] }));
     } catch (error) {
       const message =
@@ -125,7 +112,7 @@ export const useBoardStore = create<BoardState>((set, get) => ({
   ) => {
     try {
       set({ loading: true, error: null });
-      const response = await axios.patch(`${API_URL}/boards/${boardId}`, {
+      const response = await axiosInstance.patch(`/boards/${boardId}`, {
         title,
         description,
         background,
@@ -134,10 +121,6 @@ export const useBoardStore = create<BoardState>((set, get) => ({
         boards: state.boards.map((board) =>
           board.id === boardId ? response.data : board
         ),
-        currentBoard:
-          state.currentBoard?.id === boardId
-            ? response.data
-            : state.currentBoard,
       }));
     } catch (error) {
       const message =
@@ -151,11 +134,9 @@ export const useBoardStore = create<BoardState>((set, get) => ({
   deleteBoard: async (boardId: string) => {
     try {
       set({ loading: true, error: null });
-      await axios.delete(`${API_URL}/boards/${boardId}`);
+      await axiosInstance.delete(`/boards/${boardId}`);
       set((state) => ({
         boards: state.boards.filter((board) => board.id !== boardId),
-        currentBoard:
-          state.currentBoard?.id === boardId ? null : state.currentBoard,
       }));
     } catch (error) {
       const message =
@@ -167,7 +148,17 @@ export const useBoardStore = create<BoardState>((set, get) => ({
   },
 
   setCurrentBoard: async (boardId: string) => {
-    await get().fetchBoardById(boardId);
+    try {
+      set({ loading: true, error: null });
+      const response = await axiosInstance.get(`/boards/${boardId}`);
+      set({ currentBoard: response.data });
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Failed to set current board";
+      set({ error: message });
+    } finally {
+      set({ loading: false });
+    }
   },
 
   addList: async (boardId: string, title: string) => {
@@ -176,17 +167,17 @@ export const useBoardStore = create<BoardState>((set, get) => ({
       const currentBoard = get().currentBoard;
       if (!currentBoard) return;
 
-      await axios.post(`${API_URL}/lists`, {
+      const order = currentBoard.lists.length;
+      await axiosInstance.post(`/lists`, {
         title,
         boardId,
-        order: currentBoard.lists.length,
+        order,
       });
-
-      const updatedBoard = await axios.get(`${API_URL}/boards/${boardId}`);
+      const updatedBoard = await axiosInstance.get(`/boards/${boardId}`);
       set({ currentBoard: updatedBoard.data });
     } catch (error) {
       const message =
-        error instanceof Error ? error.message : "Failed to create list";
+        error instanceof Error ? error.message : "Failed to add list";
       set({ error: message });
     } finally {
       set({ loading: false });
@@ -196,12 +187,10 @@ export const useBoardStore = create<BoardState>((set, get) => ({
   updateList: async (boardId: string, listId: string, title: string) => {
     try {
       set({ loading: true, error: null });
-      await axios.patch(`${API_URL}/lists/${listId}`, {
+      await axiosInstance.patch(`/lists/${listId}`, {
         title,
-        boardId,
       });
-
-      const updatedBoard = await axios.get(`${API_URL}/boards/${boardId}`);
+      const updatedBoard = await axiosInstance.get(`/boards/${boardId}`);
       set({ currentBoard: updatedBoard.data });
     } catch (error) {
       const message =
@@ -215,9 +204,8 @@ export const useBoardStore = create<BoardState>((set, get) => ({
   deleteList: async (boardId: string, listId: string) => {
     try {
       set({ loading: true, error: null });
-      await axios.delete(`${API_URL}/lists/${listId}`);
-
-      const updatedBoard = await axios.get(`${API_URL}/boards/${boardId}`);
+      await axiosInstance.delete(`/lists/${listId}`);
+      const updatedBoard = await axiosInstance.get(`/boards/${boardId}`);
       set({ currentBoard: updatedBoard.data });
     } catch (error) {
       const message =
@@ -240,23 +228,23 @@ export const useBoardStore = create<BoardState>((set, get) => ({
       const currentBoard = get().currentBoard;
       if (!currentBoard) return;
 
-      const list = currentBoard.lists.find((l) => l.id === listId);
+      const list = currentBoard.lists.find((l: List) => l.id === listId);
       if (!list) return;
 
-      await axios.post(`${API_URL}/tasks`, {
+      const order = list.tasks.length;
+      await axiosInstance.post(`/tasks`, {
         title,
         description,
         listId,
         boardId,
-        order: list.tasks.length,
         label,
+        order,
       });
-
-      const updatedBoard = await axios.get(`${API_URL}/boards/${boardId}`);
+      const updatedBoard = await axiosInstance.get(`/boards/${boardId}`);
       set({ currentBoard: updatedBoard.data });
     } catch (error) {
       const message =
-        error instanceof Error ? error.message : "Failed to create task";
+        error instanceof Error ? error.message : "Failed to add task";
       set({ error: message });
     } finally {
       set({ loading: false });
@@ -272,18 +260,19 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     label?: { text: string; color: string }
   ) => {
     try {
-      set({ loading: true });
-      await axios.patch(`${API_URL}/tasks/${taskId}`, {
+      set({ loading: true, error: null });
+      await axiosInstance.patch(`/tasks/${taskId}`, {
         title,
         description,
+        listId,
         label,
       });
-      const updatedBoard = await axios.get(`${API_URL}/boards/${boardId}`);
+      const updatedBoard = await axiosInstance.get(`/boards/${boardId}`);
       set({ currentBoard: updatedBoard.data });
     } catch (error) {
-      set({
-        error: error instanceof Error ? error.message : "Failed to update task",
-      });
+      const message =
+        error instanceof Error ? error.message : "Failed to update task";
+      set({ error: message });
     } finally {
       set({ loading: false });
     }
@@ -292,9 +281,8 @@ export const useBoardStore = create<BoardState>((set, get) => ({
   deleteTask: async (boardId: string, listId: string, taskId: string) => {
     try {
       set({ loading: true, error: null });
-      await axios.delete(`${API_URL}/tasks/${taskId}`);
-
-      const updatedBoard = await axios.get(`${API_URL}/boards/${boardId}`);
+      await axiosInstance.delete(`/tasks/${taskId}`);
+      const updatedBoard = await axiosInstance.get(`/boards/${boardId}`);
       set({ currentBoard: updatedBoard.data });
     } catch (error) {
       const message =
@@ -305,16 +293,36 @@ export const useBoardStore = create<BoardState>((set, get) => ({
     }
   },
 
+  moveTask: async (
+    boardId: string,
+    taskId: string,
+    sourceListId: string,
+    destinationListId: string,
+    newOrder: number
+  ) => {
+    try {
+      set({ loading: true, error: null });
+      await axiosInstance.patch(`/tasks/${taskId}/move`, {
+        sourceListId,
+        destinationListId,
+        newOrder,
+      });
+      const updatedBoard = await axiosInstance.get(`/boards/${boardId}`);
+      set({ currentBoard: updatedBoard.data });
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Failed to move task";
+      set({ error: message });
+    } finally {
+      set({ loading: false });
+    }
+  },
+
   searchBoards: async (searchTerm: string) => {
     try {
       set({ loading: true, error: null });
-      const response = await axios.get(
-        `${API_URL}/boards/search/title?q=${searchTerm}`,
-        {
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem(TOKEN_KEY)}`,
-          },
-        }
+      const response = await axiosInstance.get(
+        `/boards/search/title?q=${searchTerm}`
       );
       set({ currentBoard: response.data[0] || null });
     } catch (error) {
@@ -325,4 +333,6 @@ export const useBoardStore = create<BoardState>((set, get) => ({
       set({ loading: false });
     }
   },
-}));
+});
+
+export const useBoardStore = create<BoardState>(createBoardStore);

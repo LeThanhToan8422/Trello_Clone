@@ -2,25 +2,16 @@ import React from "react";
 import { Form, Input, Button, Card, Typography } from "antd";
 import { FacebookFilled, GoogleOutlined } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
-import { useEffect } from "react";
-import "../styles/Login.css";
 import { loginRI } from "../interfaces/login.interface";
 import { useLoginStore } from "../zustand/loginStore";
 import { Bounce, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import "../styles/Login.css";
 
 const { Title } = Typography;
 
 const Login: React.FC = () => {
-  const { loginUser, isLoggedIn, checkLogin } = useLoginStore();
+  const { loginUser } = useLoginStore();
   const navigate = useNavigate();
-
-  useEffect(() => {
-    checkLogin();
-    if (isLoggedIn) {
-      navigate("/boards");
-    }
-  }, [isLoggedIn, navigate, checkLogin]);
 
   const onFinish = async (values: { email: string; password: string }) => {
     try {
