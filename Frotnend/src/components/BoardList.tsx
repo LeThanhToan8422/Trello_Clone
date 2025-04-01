@@ -101,8 +101,8 @@ const BoardList: React.FC = () => {
     <div className="app-container">
       <div className="top-nav">
         <div className="nav-left">
-          <div className="app-logo">Z</div>
-          <div className="app-name">Zalo</div>
+          <div className="app-logo">T</div>
+          <div className="app-name">Trello</div>
         </div>
         <Menu mode="horizontal" className="nav-menu" selectedKeys={["board"]}>
           <Menu.Item key="board" icon={<AppstoreOutlined />}>
