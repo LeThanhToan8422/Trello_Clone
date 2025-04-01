@@ -281,58 +281,8 @@ export const useBoardStore = create<BoardState>((set, get) => ({
         description,
         label,
       });
-
-      set((state) => {
-        // Update boards state
-        const updatedBoards = state.boards.map((board) => {
-          if (board.id === boardId) {
-            return {
-              ...board,
-              lists: board.lists.map((list) => {
-                if (list.id === listId) {
-                  return {
-                    ...list,
-                    tasks: list.tasks.map((task) =>
-                      task.id === taskId
-                        ? { ...task, title, description, label }
-                        : task
-                    ),
-                  };
-                }
-                return list;
-              }),
-            };
-          }
-          return board;
-        });
-
-        // Update currentBoard state if it matches the board being updated
-        let updatedCurrentBoard = state.currentBoard;
-        if (state.currentBoard?.id === boardId) {
-          updatedCurrentBoard = {
-            ...state.currentBoard,
-            lists: state.currentBoard.lists.map((list) => {
-              if (list.id === listId) {
-                return {
-                  ...list,
-                  tasks: list.tasks.map((task) =>
-                    task.id === taskId
-                      ? { ...task, title, description, label }
-                      : task
-                  ),
-                };
-              }
-              return list;
-            }),
-          };
-        }
-
-        return {
-          boards: updatedBoards,
-          currentBoard: updatedCurrentBoard,
-          error: null,
-        };
-      });
+      const updatedBoard = await axios.get(`${API_URL}/boards/${boardId}`);
+      set({ currentBoard: updatedBoard.data });
     } catch (error) {
       set({
         error: error instanceof Error ? error.message : "Failed to update task",
